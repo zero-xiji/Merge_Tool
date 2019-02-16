@@ -1,0 +1,189 @@
+﻿<Window x:Class="TimeChange.Views.Merge_Tool"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        Title="Copy_Tool" Height="666" Width="750">
+    <Grid x:Name="Grid_Main" Width="Auto" Height="Auto" Background="#FFF2F2F2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="10" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--line 1 Source Path-->
+        <Grid x:Name="Grid_SourcePath" Grid.Column="0" Grid.Row="1" Width="Auto" Height="Auto" DockPanel.Dock="Top" Margin="10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="75" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Source Path" FontWeight="Bold" Margin="0,5" FontSize="14"/>
+            <Border Grid.Column="1" Grid.Row="0" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Margin="0,5">
+                <TextBox x:Name="TextBox_SourcePath"
+                         TextWrapping="Wrap"
+                         Margin="0" 
+                         VerticalAlignment="Stretch"
+                         Text="{Binding SourcePath_Data}"
+                         />
+            </Border>
+            <Button x:Name="Button_SourcePath"
+                    Command="{Binding Button_SourcePath_Command}"
+                    CommandParameter="{Binding ElementName=TextBox_SourcePath, Path=Text}" 
+                    Grid.Column="2" Grid.Row="0" 
+                    Content="Folder" Height="24" 
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch" 
+                    Background="#FF00BFBF"
+                    Foreground="White"
+                    Margin="5,5,0,5"/>
+        </Grid>
+
+        <!--line 2 Target Path-->
+        <Grid x:Name="Grid_TargetPath" Grid.Column="0" Grid.Row="2" Width="Auto" Height="Auto" DockPanel.Dock="Top" Margin="10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="75" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Grid.Row="0" Content="Target Path" FontWeight="Bold" Margin="0,5" FontSize="14"/>
+            <Border Grid.Column="1" Grid.Row="0" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Margin="0,5">
+                <TextBox x:Name="TextBox_TargetPath" 
+                         TextWrapping="Wrap"
+                         Margin="0"  
+                         VerticalAlignment="Stretch" 
+                         UndoLimit="101" 
+                         Text="{Binding TargetPath_Data}"
+                         />
+            </Border>
+            <Button Grid.Column="2" 
+                    Grid.Row="0" 
+                    Content="Folder"
+                    Height="24"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Background="#FF00BFBF"
+                    Foreground="White"
+                    Margin="5,5,0,5"
+                    Command="{Binding Button_TargetPath_Command}"
+                    />
+        </Grid>
+
+        <!--line 3 main windows-->
+        <Grid x:Name="Grid_MainWindows"  Grid.Column="0" Grid.Row="3" Width="Auto" Height="Auto" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!--SourceList-->
+            <Border x:Name="Border_FileList" Grid.Row="0" Grid.Column="1" Margin="10,0,10,0" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="2">
+                <Grid x:Name="Grid_FileList" Grid.Row="0" Grid.Column="0"  Background="White" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <DockPanel Background="White">
+                        <Grid  Margin="0,0,0,0" Width="Auto" DockPanel.Dock="Top"  Background="#FFF2F2F2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Button x:Name="Btn_FileListRefresh" 
+                                    Grid.Row="0" Grid.Column="0" 
+                                    Content="♪" 
+                                    Height="24" Width="24"
+                                    Margin="0,0" 
+                                    Background="#FF00BFBF" 
+                                    Foreground="White"
+                                    HorizontalAlignment="Center" 
+                                    Command="{Binding Button_FileRefresh_Command}"
+                                    />
+                            <Label Grid.Row="0" Grid.Column="1" Content="Source List" FontWeight="Bold" Margin="0,0" HorizontalAlignment="Center"/>
+                            <Label x:Name="label_selected_all" 
+                                   Grid.Row="0" Grid.Column="3"                
+                                   Content="{Binding SelectedFileNumber_Data}" 
+                                   FontWeight="Bold" Margin="0" HorizontalAlignment="Center"/>
+                        </Grid>
+                        <Border Grid.Row="2" Grid.Column="0"   BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,2,0,2" Margin="0,0,0,0">
+                            <DataGrid x:Name="DataGrid_FileList" 
+                                      Background="White" 
+                                      RowBackground="White" 
+                                      AlternatingRowBackground="AliceBlue" 
+                                      HorizontalGridLinesBrush="#FFB4B4B4" 
+                                      CanUserAddRows="False" 
+                                      AutoGenerateColumns="False"
+                                      RowHeaderWidth="0"
+                                      GridLinesVisibility="None"
+                                      BorderThickness="0"
+                                      ItemsSource="{Binding FilesData}"
+                                      SelectedItem="{Binding SelectedFilesItem_Data}"
+                                      >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn x:Name="Column_FileName"
+                                                        Header="File Name" 
+                                                        Width="*"
+                                                        Binding="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                        IsReadOnly="True" />
+                                </DataGrid.Columns>
+                                <DataGrid.ColumnHeaderStyle>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="Background" Value="#FF44546A" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="Height" Value="28" />
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </DataGrid.ColumnHeaderStyle>
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell" >
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                            </DataGrid>
+                        </Border>
+                    </DockPanel>
+                    <WrapPanel  Grid.Row="1" Grid.Column="0"  Width="Auto" Height="Auto" Orientation="Horizontal" DockPanel.Dock="Top">
+                        <Button x:Name="Btn_Merge_All_File"
+                                Content="Merge All" Height="30" 
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Stretch" 
+                                Background="#FF00BFBF" 
+                                Foreground="White" 
+                                Margin="5" 
+                                Command="{Binding Button_MergeAllFile_Command}"
+                                />
+                    </WrapPanel>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</Window>
