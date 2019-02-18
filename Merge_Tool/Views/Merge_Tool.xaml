@@ -142,7 +142,8 @@
                                       GridLinesVisibility="None"
                                       BorderThickness="0"
                                       ItemsSource="{Binding FilesData}"
-                                      SelectedItem="{Binding MergedFilesItem_Data}"
+                                      SelectedItem="{Binding SelectedFilesItem_Data}"
+                                      MouseDoubleClick="DataGrid_FileList_MouseDoubleClick"
                                       >
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn>

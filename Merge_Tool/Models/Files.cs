@@ -62,6 +62,7 @@ namespace Merge_Tool.Models
             this.FileName = FileName;
             this.IsMerged = false;
             this.MergeSource = this.Merge_pause16_Path;
+            this.IsTargetExist = true;
         }
     }
 
