@@ -8,6 +8,10 @@ namespace Merge_Tool.Models
     /// </summary>
     public class Files : NotifyObject
     {
+        public string Merge_pause16_Path = "..\\Resource\\Merge_pause16.png";
+        public string Merge_ComplateOk16 = "..\\Resource\\Merge_ComplateOk16.png";
+        public string Merge_SeriousWarning16 = "..\\Resource\\Merge_SeriousWarning16.png";
+
         private string _fileName;
         public string FileName
         {
@@ -19,14 +23,36 @@ namespace Merge_Tool.Models
             }
         }
 
-        private bool _isChecked;
-        public bool IsChecked
+        private bool _isMerged;
+        public bool IsMerged
         {
-            get { return _isChecked; }
+            get { return _isMerged; }
             set
             {
-                _isChecked = value;
-                RaisePropertyChanged("IsChecked");
+                _isMerged = value;
+                RaisePropertyChanged("IsMerged");
+            }
+        }
+
+        private string _mergeSource;
+        public string MergeSource
+        {
+            get { return _mergeSource; }
+            set
+            {
+                _mergeSource = value;
+                RaisePropertyChanged("MergeSource");
+            }
+        }
+
+        private bool _isTargetExist;
+        public bool IsTargetExist
+        {
+            get { return _isTargetExist; }
+            set
+            {
+                _isTargetExist = value;
+                RaisePropertyChanged("IsTargetExist");
             }
         }
 
@@ -34,7 +60,8 @@ namespace Merge_Tool.Models
         public Files(string FileName)
         {
             this.FileName = FileName;
-            this.IsChecked = false;
+            this.IsMerged = false;
+            this.MergeSource = this.Merge_pause16_Path;
         }
     }
 

@@ -66,11 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\ConfigFile.cs" />
-    <Compile Include="Models\Culture.cs" />
     <Compile Include="Models\Files.cs" />
-    <Compile Include="Models\test.cs" />
-    <Compile Include="Models\XmlFile.cs" />
     <Compile Include="Resource\MyCommand.cs" />
     <Compile Include="Resource\NotifyObject.cs" />
     <Compile Include="ViewModels\Merge_ToolViewModel.cs" />
@@ -119,6 +115,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resource\M.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\Merge_ComplateOk16.png" />
+    <Resource Include="Resource\Merge_pause16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\Refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resource\Merge_SeriousWarning16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

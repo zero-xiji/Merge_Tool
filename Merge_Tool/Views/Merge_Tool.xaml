@@ -1,8 +1,8 @@
-﻿<Window x:Class="TimeChange.Views.Merge_Tool"
+﻿<Window x:Class="Merge_Tool.Views.Merge_Tool"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="Copy_Tool" Height="666" Width="750">
+        Title="Merge Tool" Height="666" Width="750" MinWidth="750">
     <Grid x:Name="Grid_Main" Width="Auto" Height="Auto" Background="#FFF2F2F2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -114,19 +114,21 @@
 
                             <Button x:Name="Btn_FileListRefresh" 
                                     Grid.Row="0" Grid.Column="0" 
-                                    Content="♪" 
                                     Height="24" Width="24"
                                     Margin="0,0" 
-                                    Background="#FF00BFBF" 
                                     Foreground="White"
                                     HorizontalAlignment="Center" 
                                     Command="{Binding Button_FileRefresh_Command}"
-                                    />
+                                    >
+                            	<Button.Background>
+                            		<ImageBrush ImageSource="/Merge_Tool;component/Resource/Refresh.png"/>
+                            	</Button.Background>
+                            </Button>
                             <Label Grid.Row="0" Grid.Column="1" Content="Source List" FontWeight="Bold" Margin="0,0" HorizontalAlignment="Center"/>
                             <Label x:Name="label_selected_all" 
                                    Grid.Row="0" Grid.Column="3"                
-                                   Content="{Binding SelectedFileNumber_Data}" 
-                                   FontWeight="Bold" Margin="0" HorizontalAlignment="Center"/>
+                                   Content="{Binding MergedFileNumber_Data}" 
+                                   FontWeight="Bold" Margin="0" HorizontalAlignment="Right"/>
                         </Grid>
                         <Border Grid.Row="2" Grid.Column="0"   BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,2,0,2" Margin="0,0,0,0">
                             <DataGrid x:Name="DataGrid_FileList" 
@@ -140,9 +142,16 @@
                                       GridLinesVisibility="None"
                                       BorderThickness="0"
                                       ItemsSource="{Binding FilesData}"
-                                      SelectedItem="{Binding SelectedFilesItem_Data}"
+                                      SelectedItem="{Binding MergedFilesItem_Data}"
                                       >
                                 <DataGrid.Columns>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Image Source="{Binding MergeSource}"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                     <DataGridTextColumn x:Name="Column_FileName"
                                                         Header="File Name" 
                                                         Width="*"
@@ -156,7 +165,6 @@
                                         <Setter Property="Foreground" Value="White" />
                                         <Setter Property="Height" Value="28" />
                                         <Setter Property="BorderBrush" Value="White"/>
-                                        <Setter Property="BorderThickness" Value="1"/>
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                     </Style>
                                 </DataGrid.ColumnHeaderStyle>
@@ -178,6 +186,12 @@
                                 Margin="5" 
                                 Command="{Binding Button_MergeAllFile_Command}"
                                 />
+                        <Image Source="..\Resource\Merge_pause16.png" Height="16" Margin="5"/>
+                        <Label Height="30">Wait</Label>
+                        <Image Source="..\Resource\Merge_ComplateOk16.png" Height="16" Margin="5"/>
+                        <Label Height="30">Merged</Label>
+                        <Image Source="..\Resource\Merge_SeriousWarning16.png" Height="16" Margin="5"/>
+                        <Label Height="30">File does not exist in the target folder</Label>
                     </WrapPanel>
                 </Grid>
             </Border>
