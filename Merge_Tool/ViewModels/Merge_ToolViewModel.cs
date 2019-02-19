@@ -114,7 +114,7 @@ namespace Merge_Tool.ViewModels
                 if (_mergedFileNumber_Data != value)
                 {
                     _mergedFileNumber_Data = value;
-                    if (countExistFile != 0)
+                    if (countExistFile != 0 && TargetPath_Data != null && TargetPath_Data != "")
                     {
                         Is_Missing_File_Exists_Show = Visibility.Visible.ToString();
                     }
@@ -143,26 +143,6 @@ namespace Merge_Tool.ViewModels
                 {
                     _selectedFilesItem_Data = value;
                     RaisePropertyChanged("SelectedFilesItem_Data");
-                }
-            }
-        }
-
-        /// <summary>
-        /// 是否开始MergeAll
-        /// </summary>
-        private string _isMergeStart = Visibility.Hidden.ToString();
-        public string IsMergeStart
-        {
-            get
-            {
-                return _isMergeStart;
-            }
-            set
-            {
-                if (_isMergeStart != value)
-                {
-                    _isMergeStart = value;
-                    RaisePropertyChanged("IsMergeStart");
                 }
             }
         }
@@ -271,6 +251,8 @@ namespace Merge_Tool.ViewModels
                                                    else
                                                    {
                                                        FilesData = new ObservableCollection<Files>();
+                                                       _countFileSelected = 0;
+                                                       _countFile = 0;
                                                        MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
                                                    }
                                                }));
@@ -300,13 +282,10 @@ namespace Merge_Tool.ViewModels
                                                    if (SourcePath_Data != null && SourcePath_Data != ""
                                                        && TargetPath_Data != null && TargetPath_Data != "")
                                                    {
-                                                       string CmdMergeStr = string.Empty;
                                                        if (MergeInstallVersion != null && !MergeInstallVersion.Equals(string.Empty))
                                                        {
                                                            foreach (Files fileData in FilesData)
                                                            {
-                                                               IsMergeStart = Visibility.Visible.ToString();
-
                                                                if (isMergeStop) { break; }
                                                                if (!fileData.IsTargetExist)
                                                                {
@@ -314,7 +293,6 @@ namespace Merge_Tool.ViewModels
                                                                }
                                                                cmdMerge(fileData);
                                                            }
-                                                           IsMergeStart = Visibility.Hidden.ToString();
                                                        }
                                                        else
                                                        {
@@ -351,7 +329,10 @@ namespace Merge_Tool.ViewModels
                                                        else
                                                        {
                                                            SelectedFilesItem_Data = fileData;
-                                                           Copy2Target();
+                                                           if (!Copy2Target()) 
+                                                           {
+                                                               break;
+                                                           }
                                                        }
                                                    }
                                                }));
@@ -548,8 +529,18 @@ namespace Merge_Tool.ViewModels
         /// <summary>
         /// copy2TargetFordel
         /// </summary>
-        public void Copy2Target()
+        public bool Copy2Target()
         {
+            if (SourcePath_Data == null || SourcePath_Data == ""
+                && TargetPath_Data == null || TargetPath_Data == "")
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    MessageBox.Show("Folders path cannot be empty!", "Warn", MessageBoxButton.OK, MessageBoxImage.Information);
+                }));
+                return false;
+            }
+
             string Source_File_Path = SourcePath_Data + "\\" + SelectedFilesItem_Data.FileName;
             string Target_File_Path = TargetPath_Data + "\\" + SelectedFilesItem_Data.FileName;
             try
@@ -564,13 +555,14 @@ namespace Merge_Tool.ViewModels
                 }
                 else
                 {
-                    return;
+                    return true;
                 }
             }
             SelectedFilesItem_Data.Model_Merge_pause();
             _countFileSelected--;
             countExistFile--;
             MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
+            return true;
         }
     }
 }
