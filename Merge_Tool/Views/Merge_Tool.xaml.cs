@@ -19,5 +19,10 @@ namespace Merge_Tool.Views
         {
             thisViewModel.MergedThisFile_Command();
         }
+
+        private void Button_AddThisFile_Click(object sender, RoutedEventArgs e)
+        {
+            thisViewModel.Copy2Target();
+        }
     }
 }

@@ -158,6 +158,21 @@
                                                         Width="*"
                                                         Binding="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                         IsReadOnly="True" />
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button HorizontalAlignment="Center" 
+                                                        Width="20" Height="20"
+                                                        Visibility="{Binding IsBtnAddShow}"
+                                                        Command="{Binding Button_AddThisFile_Command}"
+                                                        Click="Button_AddThisFile_Click">
+                                                    <Button.Background>
+                                                        <ImageBrush ImageSource="..\Resource\Merge_addFile.png"/>
+                                                    </Button.Background>
+                                                </Button>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>  
                                 </DataGrid.Columns>
                                 <DataGrid.ColumnHeaderStyle>
                                     <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -177,23 +192,35 @@
                             </DataGrid>
                         </Border>
                     </DockPanel>
-                    <WrapPanel  Grid.Row="1" Grid.Column="0"  Width="Auto" Height="Auto" Orientation="Horizontal" DockPanel.Dock="Top">
+                    <Grid  Grid.Row="1" Grid.Column="0"  Width="Auto" Height="Auto" DockPanel.Dock="Top" VerticalAlignment="Center">
+                        <WrapPanel Width="Auto" Height="Auto" Orientation="Horizontal" DockPanel.Dock="Left" Margin="6">
+                            <Image Source="..\Resource\Merge_pause16.png" Height="16" Margin="5"/>
+                            <Label Height="30">Wait</Label>
+                            <Image Source="..\Resource\Merge_ComplateOk16.png" Height="16" Margin="5"/>
+                            <Label Height="30">Merged</Label>
+                            <Image Source="..\Resource\Merge_SeriousWarning16.png" Height="16" Margin="5"/>
+                            <Label Height="30">File does not exist in the target folder</Label>                            
+                        </WrapPanel>
                         <Button x:Name="Btn_Merge_All_File"
-                                Content="Merge All" Height="30" 
+                                Content="Merge All" Height="35" 
                                 VerticalAlignment="Stretch" 
-                                HorizontalAlignment="Stretch" 
+                                HorizontalAlignment="Right" 
                                 Background="#FF00BFBF" 
                                 Foreground="White" 
                                 Margin="5" 
                                 Command="{Binding Button_MergeAllFile_Command}"
                                 />
-                        <Image Source="..\Resource\Merge_pause16.png" Height="16" Margin="5"/>
-                        <Label Height="30">Wait</Label>
-                        <Image Source="..\Resource\Merge_ComplateOk16.png" Height="16" Margin="5"/>
-                        <Label Height="30">Merged</Label>
-                        <Image Source="..\Resource\Merge_SeriousWarning16.png" Height="16" Margin="5"/>
-                        <Label Height="30">File does not exist in the target folder</Label>
-                    </WrapPanel>
+                        <Button x:Name="Btn_Add_All_Missing_File"
+                                Content="Add Missing" Height="35" 
+                                VerticalAlignment="Stretch" 
+                                HorizontalAlignment="Right" 
+                                Background="Orange" 
+                                Foreground="White" 
+                                Margin="0,5,70,5" 
+                                Command="{Binding Button_AddAllMissingFile_Command}"
+                                Visibility="{Binding Is_Missing_File_Exists_Show}"
+                                />
+                    </Grid>
                 </Grid>
             </Border>
 

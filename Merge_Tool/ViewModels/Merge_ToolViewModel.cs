@@ -11,6 +11,15 @@ namespace Merge_Tool.ViewModels
 {
     class Merge_ToolViewModel : NotifyObject
     {
+        public Merge_ToolViewModel()
+        {
+            MergeInstallVersion = GetInstallVersionD();
+            if (MergeInstallVersion.Equals(string.Empty))
+            {
+                MessageBox.Show("Merge not installed!", "Warn");
+            }
+        }
+
         #region Properties
         /// <summary>
         /// 所有文件数量
@@ -22,8 +31,22 @@ namespace Merge_Tool.ViewModels
         /// </summary>
         public int _countFileSelected { get; set; }
 
+        /// <summary>
+        /// Merge安装路径
+        /// </summary>
+        string MergeInstallVersion = "";
 
         public bool _isUnSelectAllFiles { get; set; }
+
+        private string Merging_cmd = string.Empty;
+
+        private bool isMergeStop = false;
+        private bool isThisMergedCompleted = false;
+
+        /// <summary>
+        /// 目标地址中不存在的文件个数
+        /// </summary>
+        private int countExistFile = 0;
         #endregion Properties
 
         #region Data Binding
@@ -43,7 +66,7 @@ namespace Merge_Tool.ViewModels
                 }
             }
         }
-        
+
         /// <summary>
         /// 对比地址
         /// </summary>
@@ -60,7 +83,7 @@ namespace Merge_Tool.ViewModels
                 }
             }
         }
-        
+
         /// <summary>
         /// Source文件列表
         /// </summary>
@@ -91,11 +114,19 @@ namespace Merge_Tool.ViewModels
                 if (_mergedFileNumber_Data != value)
                 {
                     _mergedFileNumber_Data = value;
+                    if (countExistFile != 0)
+                    {
+                        Is_Missing_File_Exists_Show = Visibility.Visible.ToString();
+                    }
+                    else
+                    {
+                        Is_Missing_File_Exists_Show = Visibility.Hidden.ToString();
+                    }
                     RaisePropertyChanged("MergedFileNumber_Data");
                 }
             }
         }
-        
+
         /// <summary>
         /// 选中文件
         /// </summary>
@@ -115,10 +146,52 @@ namespace Merge_Tool.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// 是否开始MergeAll
+        /// </summary>
+        private string _isMergeStart = Visibility.Hidden.ToString();
+        public string IsMergeStart
+        {
+            get
+            {
+                return _isMergeStart;
+            }
+            set
+            {
+                if (_isMergeStart != value)
+                {
+                    _isMergeStart = value;
+                    RaisePropertyChanged("IsMergeStart");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 是否显示添加全部missing文件按钮
+        /// </summary>
+        private string _is_Missing_File_Exists_Show = Visibility.Hidden.ToString();
+        public string Is_Missing_File_Exists_Show
+        {
+            get
+            {
+                return _is_Missing_File_Exists_Show;
+            }
+            set
+            {
+                if (_is_Missing_File_Exists_Show != value)
+                {
+                    _is_Missing_File_Exists_Show = value;
+                    RaisePropertyChanged("Is_Missing_File_Exists_Show");
+                }
+            }
+        }
         #endregion
 
         #region Command Binding
-        //Source 文件夹
+        /// <summary>
+        /// Source 文件夹
+        /// </summary>
         private MyCommand _button_SourcePath_Command;
         public MyCommand Button_SourcePath_Command
         {
@@ -143,7 +216,9 @@ namespace Merge_Tool.ViewModels
             }
         }
 
-        //对比 文件夹
+        /// <summary>
+        /// 对比 文件夹
+        /// </summary>
         private MyCommand _button_TargetPath_Command;
         public MyCommand Button_TargetPath_Command
         {
@@ -168,7 +243,9 @@ namespace Merge_Tool.ViewModels
             }
         }
 
-        //刷新
+        /// <summary>
+        /// 刷新
+        /// </summary>
         private MyCommand _button_FileRefresh_Command;
         public MyCommand Button_FileRefresh_Command
         {
@@ -202,7 +279,9 @@ namespace Merge_Tool.ViewModels
             }
         }
 
-        //Merge文件夹
+        /// <summary>
+        /// Merge文件夹
+        /// </summary>
         private MyCommand _button_MergeAllFile_Command;
         public MyCommand Button_MergeAllFile_Command
         {
@@ -221,33 +300,21 @@ namespace Merge_Tool.ViewModels
                                                    if (SourcePath_Data != null && SourcePath_Data != ""
                                                        && TargetPath_Data != null && TargetPath_Data != "")
                                                    {
-                                                       string InstallVersionD = GetInstallVersionD();
                                                        string CmdMergeStr = string.Empty;
-                                                       if (InstallVersionD != null && !InstallVersionD.Equals(string.Empty))
+                                                       if (MergeInstallVersion != null && !MergeInstallVersion.Equals(string.Empty))
                                                        {
-                                                           string SourceFilePath_ToMerge = "";
-                                                           string TargetFilePath_ToMerge = "";
-                                                           foreach (Files FilePath in FilesData)
+                                                           foreach (Files fileData in FilesData)
                                                            {
-                                                               SourceFilePath_ToMerge = SourcePath_Data.Trim() + FilePath.FileName;
-                                                               TargetFilePath_ToMerge = TargetPath_Data.Trim() + FilePath.FileName;
-                                                               if (FilePath.IsTargetExist)
+                                                               IsMergeStart = Visibility.Visible.ToString();
+
+                                                               if (isMergeStop) { break; }
+                                                               if (!fileData.IsTargetExist)
                                                                {
-                                                                   CmdMergeStr = "\"" + InstallVersionD + " \" \"" + SourceFilePath_ToMerge + "\" \"" + TargetFilePath_ToMerge + "\"";
-                                                                   string RunCmdResult = RunCmd(CmdMergeStr);
-                                                                   FilePath.MergeSource = FilePath.Merge_ComplateOk16;
+                                                                   continue;
                                                                }
-                                                               else
-                                                               {
-                                                                   FilePath.MergeSource = FilePath.Merge_SeriousWarning16;
-                                                               }
-                                                               if(!FilePath.IsMerged)
-                                                               {
-                                                                   _countFileSelected++;
-                                                               }
-                                                               FilePath.IsMerged = true;
-                                                               MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
+                                                               cmdMerge(fileData);
                                                            }
+                                                           IsMergeStart = Visibility.Hidden.ToString();
                                                        }
                                                        else
                                                        {
@@ -264,8 +331,36 @@ namespace Merge_Tool.ViewModels
             }
         }
 
+        /// <summary>
+        /// 添加所有目标文件夹不存在文件
+        /// </summary>
+        private MyCommand _button_AddAllMissingFile_Command;
+        public MyCommand Button_AddAllMissingFile_Command
+        {
+            get
+            {
+                if (_button_AddAllMissingFile_Command == null)
+                {
+                    _button_AddAllMissingFile_Command = new MyCommand(
+                                           new Action<object>(
+                                               o =>
+                                               {
+                                                   foreach(Files fileData in FilesData)
+                                                   {
+                                                       if (fileData.IsTargetExist) { continue; }
+                                                       else
+                                                       {
+                                                           SelectedFilesItem_Data = fileData;
+                                                           Copy2Target();
+                                                       }
+                                                   }
+                                               }));
+                }
+                return _button_AddAllMissingFile_Command;
+            }
+        }
         #endregion
-        
+
         /// <summary>
         /// 获取WinMergeU注册表信息
         /// </summary>
@@ -305,7 +400,7 @@ namespace Merge_Tool.ViewModels
         /// <param name="cmd"></param>
         /// <returns></returns>
         public string RunCmd(string cmd)
-        {      
+        {
             Process proc = new Process();
             proc.StartInfo.CreateNoWindow = true;
             proc.StartInfo.FileName = "cmd.exe";
@@ -334,6 +429,7 @@ namespace Merge_Tool.ViewModels
 
             FilesData = new ObservableCollection<Files>();
             _countFileSelected = 0;
+            countExistFile = 0;
 
             getPath(SelectedPath);
 
@@ -357,7 +453,7 @@ namespace Merge_Tool.ViewModels
             {
                 string[] Relative_FileData = thisFile.FullName.Split(new string[] { SourcePath_Data }, StringSplitOptions.None);
                 Files thisFiles = new Files(Relative_FileData[1]);
-                string TargetFilePath_ToMerge="";
+                string TargetFilePath_ToMerge = "";
                 try
                 {
                     if (TargetPath_Data != null)
@@ -366,20 +462,17 @@ namespace Merge_Tool.ViewModels
 
                         if (File.Exists(TargetFilePath_ToMerge))
                         {
-                            thisFiles.IsTargetExist = true;
-                            thisFiles.IsMerged = false;
-                            thisFiles.MergeSource = thisFiles.Merge_pause16_Path;
+                            thisFiles.Model_Merge_pause();
                         }
                         else
                         {
-                            thisFiles.IsTargetExist = false;
-                            thisFiles.IsMerged = true;
-                            thisFiles.MergeSource = thisFiles.Merge_SeriousWarning16;
+                            thisFiles.Model_Merge_SeriousWarning();
+                            countExistFile++;
                             _countFileSelected++;
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -394,7 +487,7 @@ namespace Merge_Tool.ViewModels
             }
         }
         #endregion 获取相对路径
-        
+
         /// <summary>
         /// Merge此文件
         /// </summary>
@@ -403,35 +496,9 @@ namespace Merge_Tool.ViewModels
             if (SourcePath_Data != null && SourcePath_Data != ""
                 && TargetPath_Data != null && TargetPath_Data != "")
             {
-                string InstallVersionD = GetInstallVersionD();
-                string CmdMergeStr = string.Empty;
-                if (InstallVersionD != null && !InstallVersionD.Equals(string.Empty))
+                if (MergeInstallVersion != null && !MergeInstallVersion.Equals(string.Empty))
                 {
-                    string SourceFilePath_ToMerge = "";
-                    string TargetFilePath_ToMerge = "";
-
-                    SourceFilePath_ToMerge = SourcePath_Data.Trim() + SelectedFilesItem_Data.FileName;
-                    TargetFilePath_ToMerge = TargetPath_Data.Trim() + SelectedFilesItem_Data.FileName;
-                    if (File.Exists(TargetFilePath_ToMerge))
-                    {
-                        CmdMergeStr = "\"" + InstallVersionD + " \" \"" + SourceFilePath_ToMerge + "\" \"" + TargetFilePath_ToMerge + "\"";
-                        string RunCmdResult = RunCmd(CmdMergeStr);
-                        SelectedFilesItem_Data.MergeSource = SelectedFilesItem_Data.Merge_ComplateOk16;
-                    }
-                    else
-                    {
-                        SelectedFilesItem_Data.MergeSource = SelectedFilesItem_Data.Merge_SeriousWarning16;
-                        MessageBox.Show("File does not exist in the target folder！", "Warn");
-                    }
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        if (!SelectedFilesItem_Data.IsMerged)
-                        {
-                            _countFileSelected++;
-                        }
-                        SelectedFilesItem_Data.IsMerged = true;
-                        MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
-                    }));
+                    cmdMerge(SelectedFilesItem_Data);
                 }
                 else
                 {
@@ -442,6 +509,68 @@ namespace Merge_Tool.ViewModels
             {
                 MessageBox.Show("Folders path cannot be empty!", "Warn", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        /// <summary>
+        /// Merge 文件
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <returns></returns>
+        private Files cmdMerge(Files FilePath)
+        {
+            string SourceFilePath_ToMerge = SourcePath_Data.Trim() + FilePath.FileName;
+            string TargetFilePath_ToMerge = TargetPath_Data.Trim() + FilePath.FileName;
+            if (FilePath.IsTargetExist)
+            {
+                string CmdMergeStr = "\"" + MergeInstallVersion + " \" \"" + SourceFilePath_ToMerge + "\" \"" + TargetFilePath_ToMerge + "\"";
+                string RunCmdResult = RunCmd(CmdMergeStr);
+                FilePath.MergeSource = FilePath.Merge_ComplateOk16;
+                FilePath.IsBtnAddShow = System.Windows.Visibility.Hidden.ToString();
+            }
+            else
+            {
+                FilePath.MergeSource = FilePath.Merge_SeriousWarning16;
+                FilePath.IsBtnAddShow = System.Windows.Visibility.Visible.ToString();
+                MessageBox.Show("File does not exist in the target folder！", "Warn");
+            }
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                if (!FilePath.IsMerged)
+                {
+                    _countFileSelected++;
+                }
+                FilePath.IsMerged = true;
+                MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
+            }));
+            return FilePath;
+        }
+
+        /// <summary>
+        /// copy2TargetFordel
+        /// </summary>
+        public void Copy2Target()
+        {
+            string Source_File_Path = SourcePath_Data + "\\" + SelectedFilesItem_Data.FileName;
+            string Target_File_Path = TargetPath_Data + "\\" + SelectedFilesItem_Data.FileName;
+            try
+            {
+                System.IO.File.Copy(Source_File_Path, Target_File_Path);
+            }
+            catch
+            {
+                if (MessageBox.Show("此文件已存在，是否覆盖", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    System.IO.File.Copy(Source_File_Path, Target_File_Path, true);
+                }
+                else
+                {
+                    return;
+                }
+            }
+            SelectedFilesItem_Data.Model_Merge_pause();
+            _countFileSelected--;
+            countExistFile--;
+            MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
         }
     }
 }

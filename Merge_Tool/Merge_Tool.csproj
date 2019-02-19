@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resource\Merge Tool.ico" />
+    <Resource Include="Resource\Merge_addFile.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resource\M.ico" />
