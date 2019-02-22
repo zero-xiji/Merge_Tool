@@ -20,9 +20,24 @@ namespace Merge_Tool.Views
             thisViewModel.MergedThisFile_Command();
         }
 
+        /// <summary>
+        /// 复制该文件到目标文件夹中
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_AddThisFile_Click(object sender, RoutedEventArgs e)
         {
             thisViewModel.Copy2Target();
+        }
+
+        /// <summary>
+        /// 选择该文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_SelectThisFile_Click(object sender, RoutedEventArgs e)
+        {
+            thisViewModel.setIsChecked();
         }
     }
 }

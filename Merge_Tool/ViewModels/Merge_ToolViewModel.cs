@@ -310,6 +310,42 @@ namespace Merge_Tool.ViewModels
         }
 
         /// <summary>
+        /// Merge文件夹
+        /// </summary>
+        private MyCommand _button_MergeSelectedFile_Command;
+        public MyCommand Button_MergeSelectedFile_Command
+        {
+            get
+            {
+                if (_button_MergeSelectedFile_Command == null)
+                {
+                    _button_MergeSelectedFile_Command = new MyCommand(
+                                           new Action<object>(
+                                               o =>
+                                               {
+                                                   if (SourcePath_Data != null && SourcePath_Data != ""
+                                                       && TargetPath_Data != null && TargetPath_Data != "")
+                                                   {
+                                                       if (MergeInstallVersion != null && !MergeInstallVersion.Equals(string.Empty))
+                                                       {
+                                                           foreach (Files fileData in FilesData)
+                                                           {
+                                                               if (!fileData.IsSelect) { break; }
+                                                               cmdMerge(fileData);
+                                                           }
+                                                       }
+                                                       else
+                                                       {
+                                                           MessageBox.Show("Merge not installed!", "Warn");
+                                                       }
+                                                   }
+                                               }));
+                }
+                return _button_MergeSelectedFile_Command;
+            }
+        }
+
+        /// <summary>
         /// 添加所有目标文件夹不存在文件
         /// </summary>
         private MyCommand _button_AddAllMissingFile_Command;
@@ -342,6 +378,7 @@ namespace Merge_Tool.ViewModels
         }
         #endregion
 
+        #region method
         /// <summary>
         /// 获取WinMergeU注册表信息
         /// </summary>
@@ -386,17 +423,18 @@ namespace Merge_Tool.ViewModels
         public static string RunCmd(string cmd)
         {
             Process proc = new Process();
-            proc.StartInfo.CreateNoWindow = true;
+            proc.StartInfo.CreateNoWindow = true;//不显示程序窗口
             proc.StartInfo.FileName = "cmd.exe";
-            proc.StartInfo.UseShellExecute = false;
-            proc.StartInfo.RedirectStandardError = true;
-            proc.StartInfo.RedirectStandardInput = true;
-            proc.StartInfo.RedirectStandardOutput = true;
-            proc.Start();
-            proc.StandardInput.WriteLine(cmd);
-            proc.StandardInput.WriteLine("exit");
-            string outStr = proc.StandardOutput.ReadToEnd();
-            proc.Close();
+            proc.StartInfo.UseShellExecute = false;//是否使用操作系统shell启动
+            proc.StartInfo.RedirectStandardError = true;//重定向标准错误输出
+            proc.StartInfo.RedirectStandardInput = true;//接受来自调用程序的输入信息
+            proc.StartInfo.RedirectStandardOutput = true;//由调用程序获取输出信息
+            proc.Start();//启动程序
+            proc.StandardInput.WriteLine(cmd);//向cmd窗口发送输入信息
+            proc.StandardInput.WriteLine("exit");//向cmd窗口发送输入信息
+            string outStr = proc.StandardOutput.ReadToEnd();//获取cmd窗口的输出信息
+            proc.WaitForExit();//等待程序执行完退出进程
+            proc.Close();//退出进程
             return outStr;
         }
 
@@ -515,12 +553,12 @@ namespace Merge_Tool.ViewModels
                 {
                     calcMethod_RunCmd.BeginInvoke(CmdMergeStr, null, null);
                 }
-                FilePath.MergeSource = FilePath.Merge_ComplateOk16;
+                FilePath.Model_Merge_ComplateOk();
                 FilePath.IsBtnAddShow = System.Windows.Visibility.Hidden.ToString();
             }
             else
             {
-                FilePath.MergeSource = FilePath.Merge_SeriousWarning16;
+                FilePath.Model_Merge_SeriousWarning();
                 FilePath.IsBtnAddShow = System.Windows.Visibility.Visible.ToString();
                 MessageBox.Show("File does not exist in the target folder！", "Warn");
             }
@@ -555,13 +593,13 @@ namespace Merge_Tool.ViewModels
             string Target_File_Path = TargetPath_Data + "\\" + SelectedFilesItem_Data.FileName;
             try
             {
-                System.IO.File.Copy(Source_File_Path, Target_File_Path);
+                System.IO.File.Copy(Source_File_Path, Target_File_Path);//非覆盖拷贝，目标路径存在文件时会出错
             }
             catch
             {
                 if (MessageBox.Show("此文件已存在，是否覆盖", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    System.IO.File.Copy(Source_File_Path, Target_File_Path, true);
+                    System.IO.File.Copy(Source_File_Path, Target_File_Path, true);//覆盖拷贝
                 }
                 else
                 {
@@ -574,5 +612,32 @@ namespace Merge_Tool.ViewModels
             MergedFileNumber_Data = string.Format("Merged {0}/{1}", _countFileSelected, _countFile);
             return true;
         }
+
+        /// <summary>
+        /// 设置此行是否被选中
+        /// </summary>
+        public void setIsChecked()
+        {
+            if (_isUnSelectAllFiles)
+            {
+                SelectedFilesItem_Data.IsSelect = false;
+            }
+            else
+            {
+                if (_selectedFilesItem_Data != null)
+                {
+                    if (_selectedFilesItem_Data.IsSelect == true)
+                    {
+                        _selectedFilesItem_Data.IsSelect = false;
+                    }
+                    else
+                    {
+                        _selectedFilesItem_Data.IsSelect = true;
+                    }
+                }
+            }
+        }
+
+        #endregion method
     }
 }
