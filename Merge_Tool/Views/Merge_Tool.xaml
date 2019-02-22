@@ -43,6 +43,7 @@
                     HorizontalAlignment="Stretch" 
                     Background="#FF00BFBF"
                     Foreground="White"
+                    Focusable="False"
                     Margin="5,5,0,5"/>
         </Grid>
 
@@ -75,6 +76,7 @@
                     Background="#FF00BFBF"
                     Foreground="White"
                     Margin="5,5,0,5"
+                    Focusable="False"
                     Command="{Binding Button_TargetPath_Command}"
                     />
         </Grid>
@@ -118,6 +120,7 @@
                                     Margin="0,0" 
                                     Foreground="White"
                                     HorizontalAlignment="Center" 
+                                    Focusable="False"
                                     Command="{Binding Button_FileRefresh_Command}"
                                     >
                             	<Button.Background>
@@ -163,6 +166,7 @@
                                             <DataTemplate>
                                                 <Button HorizontalAlignment="Center" 
                                                         Width="20" Height="20"
+                                                        Focusable="False"
                                                         Visibility="{Binding IsBtnAddShow}"
                                                         Command="{Binding Button_AddThisFile_Command}"
                                                         Click="Button_AddThisFile_Click">
@@ -207,6 +211,7 @@
                                 HorizontalAlignment="Right" 
                                 Background="#FF00BFBF" 
                                 Foreground="White" 
+                                Focusable="False"
                                 Margin="5" 
                                 Command="{Binding Button_MergeAllFile_Command}"
                                 />
@@ -217,6 +222,7 @@
                                 Background="Orange" 
                                 Foreground="White" 
                                 Margin="0,5,70,5" 
+                                Focusable="False"
                                 Command="{Binding Button_AddAllMissingFile_Command}"
                                 Visibility="{Binding Is_Missing_File_Exists_Show}"
                                 />
