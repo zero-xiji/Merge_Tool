@@ -375,12 +375,15 @@ namespace Merge_Tool.ViewModels
             return strRtn;
         }
 
+        delegate string RunCMDMethod(string cmd);//声明一个委托，表明需要在子线程上执行的方法的函数签名
+        static RunCMDMethod calcMethod_RunCmd = new RunCMDMethod(RunCmd);
+
         /// <summary>
         /// 运行CMD
         /// </summary>
         /// <param name="cmd"></param>
         /// <returns></returns>
-        public string RunCmd(string cmd)
+        public static string RunCmd(string cmd)
         {
             Process proc = new Process();
             proc.StartInfo.CreateNoWindow = true;
@@ -479,7 +482,7 @@ namespace Merge_Tool.ViewModels
             {
                 if (MergeInstallVersion != null && !MergeInstallVersion.Equals(string.Empty))
                 {
-                    cmdMerge(SelectedFilesItem_Data);
+                    cmdMerge(SelectedFilesItem_Data, true);
                 }
                 else
                 {
@@ -497,14 +500,21 @@ namespace Merge_Tool.ViewModels
         /// </summary>
         /// <param name="FilePath"></param>
         /// <returns></returns>
-        private Files cmdMerge(Files FilePath)
+        private Files cmdMerge(Files FilePath, bool isAsync = false)
         {
             string SourceFilePath_ToMerge = SourcePath_Data.Trim() + FilePath.FileName;
             string TargetFilePath_ToMerge = TargetPath_Data.Trim() + FilePath.FileName;
             if (FilePath.IsTargetExist)
             {
                 string CmdMergeStr = "\"" + MergeInstallVersion + " \" \"" + SourceFilePath_ToMerge + "\" \"" + TargetFilePath_ToMerge + "\"";
-                string RunCmdResult = RunCmd(CmdMergeStr);
+                if (!isAsync)
+                {
+                    RunCmd(CmdMergeStr);
+                }
+                else
+                {
+                    calcMethod_RunCmd.BeginInvoke(CmdMergeStr, null, null);
+                }
                 FilePath.MergeSource = FilePath.Merge_ComplateOk16;
                 FilePath.IsBtnAddShow = System.Windows.Visibility.Hidden.ToString();
             }
