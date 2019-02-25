@@ -551,7 +551,7 @@ namespace Merge_Tool.ViewModels
                 }
                 else
                 {
-                    calcMethod_RunCmd.BeginInvoke(CmdMergeStr, null, null);
+                    calcMethod_RunCmd.BeginInvoke(CmdMergeStr, null, null);//BeginInvoke(设定的参数, callback函数, object)
                 }
                 FilePath.Model_Merge_ComplateOk();
                 FilePath.IsBtnAddShow = System.Windows.Visibility.Hidden.ToString();
