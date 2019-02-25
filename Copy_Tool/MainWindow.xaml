@@ -1,0 +1,114 @@
+﻿<Window x:Class="Copy_Tool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Copy Tool" Height="250" Width="600" 
+        MaxHeight="250" MaxWidth="600"
+        MinHeight="250" MinWidth="600" Background="White">
+    <Grid>
+        <Grid.Background>
+            <SolidColorBrush Color="White"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+        </Grid.RowDefinitions>
+
+        <Button Content="复制" HorizontalAlignment="Left" Margin="19,16,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" Grid.Column="2" Height="67.526" Grid.RowSpan="2" Background="#FFC3D4B9" Click="Button_Copy_Click"/>
+        <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" >源文件根路径</Label>
+        <TextBox x:Name="Source_Root_Path" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Height="24" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center" Width="350" >
+            <TextBox.Resources>
+                <VisualBrush x:Key="HintText" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                    <VisualBrush.Visual>
+                        <TextBlock FontStyle="Italic" Text="C:\Source"/>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Resources>
+            <TextBox.Background>
+                <VisualBrush AlignmentX="Left" Opacity="0.5" Stretch="None" TileMode="None">
+                    <VisualBrush.Visual>
+                        <TextBlock FontStyle="Italic" Text="C:\Source"><Run Text="C:\Source"/></TextBlock>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Background>
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                        </Trigger>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" >源文件地址</Label>
+        <TextBox x:Name="Source_Path" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" Height="24" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center" Width="350" >
+            <TextBox.Resources>
+                <VisualBrush x:Key="HintText" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                    <VisualBrush.Visual>
+                        <TextBlock FontStyle="Italic" Text="可从SVN复制"/>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Resources>
+            <TextBox.Background>
+                <VisualBrush AlignmentX="Left" Opacity="0.5" Stretch="None" TileMode="None">
+                    <VisualBrush.Visual>
+                        <TextBlock FontStyle="Italic"><Run Text="C:\Source"/></TextBlock>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Background>
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                        </Trigger>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" >目的地址根路径</Label>
+        <TextBox x:Name="Target_Root_Path"  Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" Height="24" Margin="0" TextWrapping="Wrap" VerticalAlignment="Center" Width="350">
+            <TextBox.Resources>
+                <VisualBrush x:Key="HintText" TileMode="None" Opacity="0.5" Stretch="None" AlignmentX="Left">
+                    <VisualBrush.Visual>
+                        <TextBlock FontStyle="Italic" Text="C:\output\修正したソース" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Resources>
+            <TextBox.Background>
+                <VisualBrush AlignmentX="Left" Opacity="0.5" Stretch="None" TileMode="None">
+                    <VisualBrush.Visual>
+                        <TextBlock FontStyle="Italic"><Run Text="C:\Source"/></TextBlock>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </TextBox.Background>
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="{x:Null}">
+                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                        </Trigger>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Background" Value="{StaticResource HintText}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
+    </Grid>
+</Window>
